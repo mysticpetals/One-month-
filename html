@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#160d20">
+<title>LEVEL 01: US FOREVER ♡</title>
+<style>
+:root{
+  --bg:#160d20;--panel:#25152f;--pink:#ff75ae;
+  --red:#ff456e;--cream:#fff0d1;--purple:#9c78ff;
+  --green:#9dffb0;--yellow:#ffe783;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--cream);
+  font-family:"Courier New",monospace;text-align:center;
+  overflow-x:hidden;image-rendering:pixelated;
+}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:3px solid var(--yellow);outline-offset:4px}
+#sky{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.pixel{
+  position:absolute;bottom:-45px;opacity:0;
+  animation:floatUp linear infinite;filter:drop-shadow(0 0 5px #ff75ae66)
+}
+@keyframes floatUp{
+  10%{opacity:.85}90%{opacity:.8}
+  100%{transform:translateY(-115vh) rotate(25deg);opacity:0}
+}
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+ background-image:radial-gradient(#ffb5d6 1px,transparent 1px);
+ background-size:37px 37px;opacity:.16;animation:twinkle 3s steps(2) infinite}
+@keyframes twinkle{50%{opacity:.3}}
+#app{position:relative;z-index:1;max-width:650px;margin:auto;padding:18px 14px 42px}
+.topline{display:flex;justify-content:space-between;gap:8px;align-items:center;
+ font-size:11px;color:#d9b9e9;margin:4px 0 12px}
+.pixelbox{border:3px solid var(--pink);box-shadow:5px 5px 0 #5e2b52;
+ background:var(--panel);padding:20px 16px;margin:15px 0}
+h1,h2,h3,p{line-height:1.55}
+h1{font-size:clamp(25px,7vw,43px);line-height:1.25;color:var(--pink);
+ text-shadow:3px 3px #8d2858;margin:8px 0 14px}
+h2{font-size:clamp(20px,5vw,28px);color:var(--yellow)}
+h3{color:var(--pink)}
+p{font-size:14px;line-height:1.85}
+.small{font-size:11px;color:#d8c2e4;line-height:1.8}
+.pixelbtn{
+ border:3px solid var(--cream);box-shadow:4px 4px 0 #8b456a;
+ background:var(--pink);color:#351328;padding:13px 15px;
+ font-weight:bold;margin:6px;max-width:100%;transition:transform .12s,box-shadow .12s;
+}
+.pixelbtn:active{transform:translate(4px,4px);box-shadow:0 0 0}
+.pixelbtn.secondary{background:var(--purple);color:#180d29}
+.pixelbtn.green{background:var(--green);color:#11251a}
+.pixelbtn.dark{background:#392346;color:var(--cream)}
+.screen{display:none;animation:screenIn .45s steps(5) both}
+.screen.active{display:block}
+@keyframes screenIn{
+ from{opacity:0;transform:translateX(30px) scale(.97);filter:blur(3px)}
+ to{opacity:1;transform:translateX(0) scale(1);filter:blur(0)}
+}
+@keyframes screenOut{
+ to{opacity:0;transform:translateX(-24px) scale(.97)}
+}
+.progress{height:14px;border:2px solid var(--cream);padding:2px;margin:12px 0}
+#progressFill{height:100%;width:0;background:var(--pink);transition:width .35s steps(6)}
+.stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;font-size:11px}
+.stat{border:2px solid #67436f;padding:8px;background:#1c1127}
+.gameart{font-size:48px;letter-spacing:5px;line-height:1.8;
+ animation:bob 1.2s steps(3) infinite}
+@keyframes bob{50%{transform:translateY(-7px)}}
+.pixelheart{display:inline-block;color:var(--pink);animation:heartBeat .8s steps(2) infinite}
+@keyframes heartBeat{50%{transform:scale(1.22)}}
+.quest{text-align:left;border:2px dashed #8c638d;padding:12px;margin:10px 0;
+ font-size:12px;line-height:1.8}
+.quest.done{border-color:var(--green);color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{min-height:115px;background:#1c1028;color:var(--cream);
+ border:2px solid #76517f;padding:12px 8px;line-height:1.6}
+.tile .emoji{font-size:27px;display:block;margin-bottom:7px}
+.tile.locked{opacity:.6;border-style:dashed}
+.tile.unlocked{border-color:var(--pink);animation:unlock .35s steps(4)}
+@keyframes unlock{50%{transform:scale(1.04);background:#48223e}}
+.noteBody,.couponBody{display:none;text-align:left;margin-top:12px;
+ border:2px solid var(--pink);padding:13px;background:#1b1027;
+ font-size:13px;line-height:1.9;animation:screenIn .25s steps(4)}
+.noteBody.show,.couponBody.show{display:block}
+.letter{text-align:left;white-space:normal;line-height:2;font-size:13px}
+.letter p{font-size:13px}
+.letterTitle{text-align:center;color:var(--pink)}
+.divider{color:#b783d7;letter-spacing:4px;margin:15px 0}
+#toast{
+ position:fixed;z-index:20;top:15px;left:50%;transform:translateX(-50%) translateY(-150%);
+ background:var(--yellow);color:#2b1530;border:3px solid white;
+ box-shadow:4px 4px 0 #8d2858;padding:12px;width:max-content;
+ max-width:90%;font-size:12px;line-height:1.5;transition:transform .3s steps(5)
+}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#modal{
+ display:none;position:fixed;inset:0;z-index:30;background:#090510cc;
+ align-items:center;justify-content:center;padding:20px
+}
+#modal.show{display:flex;animation:screenIn .2s steps(3)}
+.modalbox{width:min(100%,400px);border:4px solid var(--pink);
+ box-shadow:6px 6px 0 #7b345d;background:var(--panel);padding:23px}
+.modalbox p{line-height:1.9}
+#cakeArea{position:relative;width:290px;max-width:100%;height:220px;margin:20px auto 12px;
+ cursor:pointer;touch-action:manipulation}
+.cakePlate{position:absolute;bottom:20px;left:5%;width:90%;height:17px;
+ border:3px solid var(--cream);border-radius:50%;background:#a7a0bd}
+.cakeBase{position:absolute;bottom:35px;left:15%;width:70%;height:76px;
+ background:#ff83ad;border:4px solid #fff0d1;
+ box-shadow:inset 0 -18px #e74c82,inset 0 -24px #fff0d1}
+.cakeTop{position:absolute;bottom:107px;left:15%;width:70%;height:26px;
+ border:4px solid #fff0d1;border-radius:50%;background:#ffc3d9}
+.icing{position:absolute;bottom:91px;left:19%;width:62%;height:15px;
+ background:#fff0d1;clip-path:polygon(0 0,100% 0,100% 100%,82% 100%,78% 40%,64% 40%,60% 100%,40% 100%,36% 45%,22% 45%,18% 100%,0 100%)}
+.candle{position:absolute;bottom:128px;width:8px;height:29px;
+ border:2px solid #fff0d1;background:repeating-linear-gradient(0deg,#a17bff 0 5px,#ff75ae 5px 10px)}
+.c1{left:37%}.c2{left:49%}.c3{left:61%}
+.flame{position:absolute;width:13px;height:18px;bottom:157px;
+ background:var(--yellow);border-radius:60% 40% 60% 40%;
+ box-shadow:0 0 13px #ff9f53;animation:flame 0.3s steps(2) infinite alternate}
+.f1{left:36.5%}.f2{left:48.5%}.f3{left:60.5%}
+@keyframes flame{to{transform:rotate(10deg) scale(.8);background:#ff8a55}}
+.smoke{position:absolute;font-size:23px;bottom:157px;opacity:0;pointer-events:none}
+.s1{left:34%}.s2{left:46%}.s3{left:58%}
+.blown .flame{display:none}
+.blown .smoke{animation:smoke .9s ease-out forwards}
+@keyframes smoke{0%{opacity:0;transform:translateY(0) scale(.4)}
+ 30%{opacity:1}100%{opacity:0;transform:translateY(-45px) translateX(10px) scale(1.5)}}
+.cakeSlice{position:absolute;bottom:39px;right:13%;width:43px;height:53px;
+ background:#ffb0cf;border:3px solid #fff0d1;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
+ transition:transform .7s steps(7),opacity .7s;transform-origin:left bottom}
+.cakeSlice:before{content:"";position:absolute;top:15px;left:0;width:100%;height:8px;background:#e74c82}
+.sliceGone .cakeSlice{transform:translate(78px,-18px) rotate(18deg);opacity:.85}
+#cakeHint{font-size:11px;color:#e5cde9;min-height:35px}
+footer{font-size:10px;color:#8e739d;line-height:1.9;margin-top:25px}
+@media(max-width:380px){
+ #app{padding:12px 10px 30px}.pixelbox{padding:15px 10px}
+ .pixelbtn{padding:11px 10px;font-size:12px}.tile{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div id="sky" aria-hidden="true"></div><div class="stars" aria-hidden="true"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+ <div class="modalbox">
+  <h2 id="modalTitle">SURPRISE!</h2><p id="modalText"></p>
+  <button class="pixelbtn" onclick="closeModal()">OKAY OKAY ♡</button>
+ </div>
+</div>
+
+<main id="app">
+ <div class="topline"><span>♡ PATIDEV.EXE</span><span>PLAYER 1: UR MALKIN</span></div>
+ <div class="pixelbox" style="padding:12px">
+  <div class="stats">
+   <span class="stat">LEVEL <b id="level">01</b></span>
+   <span class="stat">LOVE XP: <b id="xp">0</b></span>
+   <span class="stat">HEARTS: <b id="hearts">♡♡♡</b></span>
+  </div>
+  <div class="progress"><div id="progressFill"></div></div>
+  <div class="small" id="progressText">MISSION PROGRESS: 0%</div>
+ </div>
+
+ <!-- SCREEN 1 -->
+ <section class="screen active" id="home">
+  <div class="pixelbox">
+   <div class="gameart">💗 ✦ 🌹</div>
+   <p class="small">[ A VERY IMPORTANT GAME HAS STARTED ]</p>
+   <h1>LEVEL 01:<br>US FOREVER</h1>
+   <p>A tiny pixel universe dedicated to one particular idiot.</p>
+   <p>Target identified: <b style="color:var(--pink)">PATIDEV ♡</b></p>
+   <div class="divider">✦ ✧ ✦</div>
+   <p class="small">QUEST: SURVIVE ONE MONTH OF BEING CUTE TOGETHER.</p>
+   <button class="pixelbtn" onclick="go('quests')">START THE GAME ▶</button>
+   <button class="pixelbtn secondary" onclick="joke()">PRESS FOR NONSENSE</button>
+  </div>
+  <p class="small">WARNING: may cause excessive smiling, blushing and nonsense.</p>
+ </section>
+
+ <!-- SCREEN 2 -->
+ <section class="screen" id="quests">
+  <div class="pixelbox">
+   <h2>♡ QUEST BOARD ♡</h2>
+   <p>Every great love story has side quests. Ours has questionable management.</p>
+   <div class="quest" id="q1">□ QUEST 1: Open a love note. <span>+10 XP</span></div>
+   <div class="quest" id="q2">□ QUEST 2: Read the official love letter. <span>+20 XP</span></div>
+   <div class="quest" id="q3">□ QUEST 3: Redeem a coupon. <span>+10 XP</span></div>
+   <div class="quest" id="q4">□ QUEST 4: Blow out the birthday-style candles. <span>+20 XP</span></div>
+   <button class="pixelbtn" onclick="go('notes')">FIND SECRET NOTES ♡</button>
+   <button class="pixelbtn secondary" onclick="go('letter')">READ MY LETTER 💌</button>
+   <button class="pixelbtn dark" onclick="go('coupons')">OPEN INVENTORY 🎟</button>
+  </div>
+  <button class="pixelbtn dark" onclick="go('home')">◀ BACK TO TITLE</button>
+ </section>
+
+ <!-- SCREEN 3 -->
+ <section class="screen" id="notes">
+  <div class="pixelbox">
+   <h2>💌 SECRET LOVE NOTES</h2>
+   <p class="small">TAP A CARD TO UNLOCK ITS CONTENTS.</p>
+   <div class="grid" id="noteGrid">
+    <button class="tile" onclick="openNote(0)"><span class="emoji">💗</span>01<br>A LITTLE CONFESSION</button>
+    <button class="tile" onclick="openNote(1)"><span class="emoji">😤</span>02<br>UNFAIR ADVANTAGE</button>
+    <button class="tile" onclick="openNote(2)"><span class="emoji">🌱</span>03<br>A TINY PROMISE</button>
+    <button class="tile" onclick="openNote(3)"><span class="emoji">👀</span>04<br>EXPOSING MYSELF</button>
+    <button class="tile" onclick="openNote(4)" style="grid-column:1/-1"><span class="emoji">👑</span>05<br>FOR MY PATIDEV</button>
+   </div>
+   <div id="noteBody" class="noteBody" aria-live="polite"></div>
+   <button class="pixelbtn" onclick="go('letter')">NEXT: THE LETTER 💌</button>
+   <button class="pixelbtn dark" onclick="go('quests')">◀ QUEST BOARD</button>
+  </div>
+ </section>
+
+ <!-- SCREEN 4 -->
+ <section class="screen" id="letter">
+  <div class="pixelbox">
+   <div class="gameart">💌 🌹 💌</div>
+   <h2 class="letterTitle">A LETTER FROM UR MALKIN</h2>
+   <p class="small">CONFIDENTIAL. FOR PATIDEV'S EYES ONLY.</p>
+   <div class="divider">♡ ━━━ ♡</div>
+   <div class="letter">
+    <p><b>dear patidev,</b></p>
+    <p>Even though I hate God sometimes, thinking nothing good will happen, but He gave me u 💗</p>
+    <p>It's only been a month and u made me feel loved the most in such a long time. U became the person I want to talk to every second, spend every moment with.</p>
+    <p>U have an unfair advantage of making me smile at ur replies every time, and at night blush 🤭</p>
+    <p>I don't know how to express my feelings but I will try for u.</p>
+    <p>Now ofc because of VERY professional overthinking I feel a little scared, but I know I don't need to be. I don't need us to be perfect or like some movie where everything magically works out. I want us to be just honest.</p>
+    <p>And if u think I will leave u, then tell ur mind this woman's heart skips a beat whenever u are talking to me. U entered my heart, now u can't leave.</p>
+    <p>I always hope u are never afraid to tell me ur real feelings or hardships.</p>
+    <p>This first month was just a small chapter in our journey.</p>
+    <p>So happy first month, patidev.</p>
+    <p>I like u when ur clingy and shirtless 🤭</p>
+    <p style="text-align:center;color:var(--pink);font-weight:bold;font-size:17px;line-height:2.2">
+     mawhhhhh 💋<br>mawhhhhh 💋<br>mawhhhhh 💋<br>MAWHHHHHHHHH 💋💋<br>
+     okay enough kisses.<br>WAIT NO.<br>MAWHHHHHHHHH 💋💗
+    </p>
+    <p style="text-align:right;color:var(--pink)"><b>~ Ur Malkin ♡</b></p>
+   </div>
+   <div class="divider">♡ ━━━ ♡</div>
+   <button class="pixelbtn green" onclick="completeQuest('q2',20,'LETTER QUEST COMPLETE 💗')">LETTER RECEIVED ♡</button>
+   <button class="pixelbtn" onclick="go('cake')">NEXT: CAKE TIME 🎂</button>
+   <button class="pixelbtn dark" onclick="go('notes')">◀ LOVE NOTES</button>
+  </div>
+ </section>
+
+ <!-- SCREEN 5 -->
+ <section class="screen" id="cake">
+  <div class="pixelbox">
+   <h2>🎂 THE CAKE QUEST 🎂</h2>
+   <p>A cake has appeared. The candles are being dramatic.</p>
+   <div id="cakeArea" role="button" tabindex="0" aria-label="Tap the cake to blow out candles">
+    <div class="cakePlate"></div>
+    <div class="cakeBase"></div><div class="cakeTop"></div><div class="icing"></div>
+    <div class="candle c1"></div><div class="candle c2"></div><div class="candle c3"></div>
+    <div class="flame f1"></div><div class="flame f2"></div><div class="flame f3"></div>
+    <div class="smoke s1">☁</div><div class="smoke s2">☁</div><div class="smoke s3">☁</div>
+    <div class="cakeSlice"></div>
+   </div>
+   <p id="cakeHint">TAP THE CAKE TO BLOW OUT THE CANDLES.</p>
+   <button class="pixelbtn" onclick="blowCandles()">💨 BLOW OUT CANDLES</button>
+   <button class="pixelbtn secondary" onclick="moveSlice()">🍰 STEAL A SLICE</button>
+   <button class="pixelbtn dark" onclick="go('coupons')">NEXT: REWARDS 🎟</button>
+  </div>
+ </section>
+
+ <!-- SCREEN 6 -->
+ <section class="screen" id="coupons">
+  <div class="pixelbox">
+   <h2>🎟 REWARD INVENTORY 🎟</h2>
+   <p>Four coupons. One suspiciously powerful girlfriend.</p>
+   <div class="grid">
+    <button class="tile" onclick="openCoupon(0)"><span class="emoji">👀</span>01<br>ATTENTION TAX</button>
+    <button class="tile" onclick="openCoupon(1)"><span class="emoji">🕊️</span>02<br>FIGHT CANCELLATION</button>
+    <button class="tile" onclick="openCoupon(2)"><span class="emoji">🎁</span>03<br>MYSTERY REWARD</button>
+    <button class="tile" onclick="openCoupon(3)"><span class="emoji">📺</span>04<br>FINAL BOSS ♛</button>
+   </div>
+   <div id="couponBody" class="couponBody" aria-live="polite"></div>
+   <button class="pixelbtn" onclick="go('final')">CLAIM THE FINAL SURPRISE ✨</button>
+   <button class="pixelbtn dark" onclick="go('quests')">◀ QUEST BOARD</button>
+  </div>
+ </section>
+
+ <!-- SCREEN 7 -->
+ <section class="screen" id="final">
+  <div class="pixelbox">
+   <div class="gameart">💗 🌹 💗</div>
+   <h1>QUEST COMPLETE!</h1>
+   <p>You survived LEVEL 01.</p>
+   <p>Loot unlocked:</p>
+   <div class="quest">♡ 1 girlfriend with an unreasonable amount of affection</div>
+   <div class="quest">♡ Unlimited pixel hearts</div>
+   <div class="quest">♡ A lifetime supply of random nonsense</div>
+   <div class="quest">♡ The privilege of being called PATIDEV</div>
+   <h2 id="finalRank">RANK: CERTIFIED CUTIES ♡</h2>
+   <p>Happy first month, patidev. This is only the beginning of our little story. 💗</p>
+   <p class="small">SAVE GAME? The memories are yours to keep.</p>
+   <button class="pixelbtn" onclick="popup('SECRET ENDING UNLOCKED 💗','Plot twist: the final boss was never the game. It was me trying to act normal around u. I failed spectacularly. 😭💋')">SECRET ENDING ✨</button>
+   <button class="pixelbtn secondary" onclick="go('home')">↻ PLAY AGAIN</button>
+  </div>
+ </section>
+
+ <footer>MADE WITH TOO MANY HEARTS ♡<br>NO BUGS, ONLY EMOTIONAL DAMAGE FROM CUTENESS.<br>VERSION 1.0 · LOVE GAME STUDIO</footer>
+</main>
+
+<script>
+const notes=[
+ ["A LITTLE CONFESSION","If someone told me a month ago that one person would become such a big part of my everyday life, I would've laughed. And then u happened. 💗"],
+ ["YOUR UNFAIR ADVANTAGE","It's actually so annoying how u can make me smile at my screen just by replying. Like sir, who gave u this power???"],
+ ["A TINY PROMISE","I can't promise that every day will be perfect, but I can promise to be there for u in every step."],
+ ["EXPOSING MYSELF","Not me thinking about our first meeting every day 😁😁"],
+ ["FOR MY PATIDEV","Happy one month, patidev. U are officially stuck with this overthinking, clingy, attitude-filled girl who likes u an unreasonable amount. Congratulations 😁💗"]
+];
+const coupons=[
+ ["THE ATTENTION TAX","Congratulations hubby! You've officially claimed my undivided attention. No distractions, just me and you. Hehe 🤭"],
+ ["STUPID FIGHT CANCELLATION","One free cancellation for a stupid fight. Redeem when needed. We talk it out, okay? ♡"],
+ ["MYSTERY REWARD","Congratulations u got a clingy wife with attitude she learnt from K-dramas 😁"],
+ ["THE FINAL BOSS ♛","Congratulations hubby, u have to watch unlimited K-dramas with me 😁💗"]
+];
+let xp=0,completed=new Set(),seenNotes=new Set(),usedCoupons=new Set();
+let candlesBlown=false,sliceMoved=false,toastTimer;
+const $=id=>document.getElementById(id);
+
+function go(id){
+ const current=document.querySelector('.screen.active');
+ if(current && current.id===id)return;
+ if(current){
+  current.style.animation='screenOut .18s steps(4) forwards';
+  setTimeout(()=>{
+   current.classList.remove('active');current.style.animation='';
+   showScreen(id);
+  },150);
+ }else showScreen(id);
+}
+function showScreen(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ const target=$(id);
+ if(target){target.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+ if(id==='final')updateRank();
+}
+function updateStats(){
+ $('xp').textContent=xp;
+ $('level').textContent=xp>=60?'02':'01';
+ $('hearts').textContent='♡'.repeat(Math.min(5,3+Math.floor(xp/30)));
+ const percent=Math.min(100,Math.round(completed.size/4*100));
+ $('progressFill').style.width=percent+'%';
+ $('progressText').textContent='QUEST PROGRESS: '+percent+'%';
+}
+function completeQuest(id,points,message){
+ if(completed.has(id))return popup('ALREADY COMPLETED!','This quest is already in your inventory, gamer. 😌');
+ completed.add(id);xp+=points;
+ $(id).classList.add('done');$(id).textContent='☑ '+$(id).textContent.slice(2);
+ updateStats();toast(message+' +'+points+' XP');
+}
+function openNote(i){
+ $('noteBody').classList.add('show');
+ $('noteBody').innerHTML='<b style="color:var(--pink)">♡ '+notes[i][0]+' ♡</b><p>'+notes[i][1]+'</p>';
+ if(!seenNotes.has(i)){
+  seenNotes.add(i);xp+=10;updateStats();
+  $('q1').classList.add('done');$('q1').textContent='☑ QUEST 1: Open a love note. +10 XP';
+  toast('SECRET NOTE UNLOCKED! +10 XP 💗');
+ }
+ document.querySelectorAll('#noteGrid .tile').forEach((el,n)=>{
+  if(n===i)el.classList.add('unlocked');
+ });
+}
+function openCoupon(i){
+ $('couponBody').classList.add('show');
+ $('couponBody').innerHTML='<b style="color:var(--yellow)">🎟 '+coupons[i][0]+'</b><p>'+coupons[i][1]+'</p>'+
+ '<button class="pixelbtn green" onclick="redeem('+i+')">REDEEM THIS COUPON ♡</button>';
+}
+function redeem(i){
+ if(usedCoupons.has(i))return popup('COUPON ALREADY USED!','This coupon has officially been redeemed. No refunds, only hugs and negotiations. 😌');
+ usedCoupons.add(i);xp+=10;updateStats();
+ $('q3').classList.add('done');$('q3').textConte
